@@ -110,6 +110,39 @@ class GameViewController: UIViewController {
         setupGestures()
     }
     
+    @objc func toggleCameraAdjustable() {
+        isCameraAdjustable.toggle()
+        gameView.allowsCameraControl = isCameraAdjustable
+        adjustCameraButton.backgroundColor = isCameraAdjustable ? .green : .gray
+        
+//        if isCameraAdjustable == false {
+//            resetCameraPosition()
+//        }
+        
+        //Later iteration of game should have the camera follow the player node.
+        
+//        if isCameraAdjustable {
+//            removeGestures()
+//            addCameraMovementGestures()
+//        } else {
+//            removeGestures()
+//            setupGestures()
+//        }
+    }
+    
+    func removeGestures() {
+        if let gestures = gameView.gestureRecognizers {
+            for gesture in gestures {
+                gameView.removeGestureRecognizer(gesture)
+            }
+        }
+    }
+    
+//    func resetCameraPosition() {
+//        cameraNode.eulerAngles = SCNVector3(0, 0, 0)
+//        cameraNode.position = SCNVector3(0, 0, 20)
+//    }
+    
     func setupUI() {
         
         roundLabel = UILabel(frame: CGRect(x: self.view.frame.width / 2 - 50, y: 40, width: 100, height: 30))
@@ -127,14 +160,14 @@ class GameViewController: UIViewController {
         adjustCameraButton.addTarget(self, action: #selector(toggleCameraAdjustable), for: .touchUpInside)
         self.view.addSubview(adjustCameraButton)
         
-        nextRoundButton = UIButton(frame: CGRect(x: 170, y: self.view.frame.height - 80, width: 150, height: 50))
+        nextRoundButton = UIButton(frame: CGRect(x: 170, y: self.view.frame.height - 80, width: 120, height: 50))
         nextRoundButton.setTitle("Next Round", for: .normal)
         nextRoundButton.backgroundColor = .blue
         nextRoundButton.addTarget(self, action: #selector(nextRound), for: .touchUpInside)
         self.view.addSubview(nextRoundButton)
         
-        resetGameButton = UIButton(frame: CGRect(x: 330, y: self.view.frame.height - 80, width: 150, height: 50))
-        resetGameButton.setTitle("Reset Game", for: .normal)
+        resetGameButton = UIButton(frame: CGRect(x: 300, y: self.view.frame.height - 80, width: 80, height: 50))
+        resetGameButton.setTitle("Reset", for: .normal)
         resetGameButton.backgroundColor = .red
         resetGameButton.addTarget(self, action: #selector(resetGame), for: .touchUpInside)
         self.view.addSubview(resetGameButton)
@@ -155,12 +188,6 @@ class GameViewController: UIViewController {
         gameCompleteButton.backgroundColor = .green
         gameCompleteButton.addTarget(self, action: #selector(resetGame), for: .touchUpInside)
         self.view.addSubview(gameCompleteButton)
-    }
-    
-    @objc func toggleCameraAdjustable() {
-      isCameraAdjustable.toggle()
-      gameView.allowsCameraControl = isCameraAdjustable
-      adjustCameraButton.backgroundColor = isCameraAdjustable ? .green : .gray
     }
     
     func updateRoundLabel() {
@@ -274,14 +301,6 @@ class GameViewController: UIViewController {
             movementHistory[currentRound - 1].append(playerNode.position)
         } else {
             print("Error: currentRound index \(currentRound) out of bounds for movementHistory")
-        }
-    }
-    
-    override func updateViewConstraints() {
-        super.updateViewConstraints()
-        
-        if let pointOfView = gameView.pointOfView {
-            cameraNode.simdTransform = pointOfView.simdTransform
         }
     }
 
